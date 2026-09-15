@@ -1,0 +1,25 @@
+spring:
+  application:
+    name:
+      DeliveryAqui
+  server:
+    port:
+      8080
+  mvc:
+    problemdetails:
+      enabled: true
+  datasource:
+    url:
+      jdbc:postgresql://localhost:8080/YOUR_DATABASE
+    username:
+      YOUR_USERNAME
+    password:
+      YOUR_PASSWORD
+  jpa:
+    hibernate:
+      ddl-auto:
+        update
+
+
+
+
