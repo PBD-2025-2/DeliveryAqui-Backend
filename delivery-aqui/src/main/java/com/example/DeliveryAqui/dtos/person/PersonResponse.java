@@ -4,6 +4,6 @@ import java.time.Instant;
 
 public record PersonResponse(
         Long id,
-        Long userId,
+        String firstName,
         Instant updatedAt
 ) {}

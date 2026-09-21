@@ -5,9 +5,9 @@ import com.example.DeliveryAqui.dtos.person.PersonPostRequest;
 import com.example.DeliveryAqui.dtos.person.PersonPutRequest;
 import com.example.DeliveryAqui.dtos.person.PersonResponse;
 import com.example.DeliveryAqui.mapper.PersonMapper;
+import com.example.DeliveryAqui.model.entity.Customer;
 import com.example.DeliveryAqui.model.entity.Person;
 import com.example.DeliveryAqui.repository.CustomerRepository;
-import com.example.DeliveryAqui.repository.DeliveryDriverRepository;
 import com.example.DeliveryAqui.repository.PersonRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +22,7 @@ import java.util.List;
 public class PersonService {
 
     private final PersonRepository personRepository;
+    private final CustomerRepository customerRepository;
     private final PersonMapper personMapper;
 
     public List<PersonResponse> findAll() {
@@ -89,11 +90,9 @@ public class PersonService {
         Person person = personRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + id));
 
-        /* -- Uncomment this when customer logic is done --
         Customer customer = customerRepository.findByPersonId(id);
         if (customer != null)
             throw new IllegalArgumentException("Cannot delete person with id " + id + ". There is a customer related to it");
-         */
 
         personRepository.delete(person);
     }

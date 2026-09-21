@@ -12,14 +12,12 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface PersonMapper {
+
     PersonResponse entityToResponse(Person person);
-    List<PersonResponse> entityToResponse(List<Person> person);
 
     PersonDetailResponse entityToDetailResponse(Person person);
-    List<PersonDetailResponse> entityToDetailResponse(List<Person> person);
 
     Person postRequestToEntity(PersonPostRequest personPostRequest);
-    Person putRequestToEntity(PersonPutRequest personPutRequest);
 
     void updateEntity(
             PersonPutRequest request,
