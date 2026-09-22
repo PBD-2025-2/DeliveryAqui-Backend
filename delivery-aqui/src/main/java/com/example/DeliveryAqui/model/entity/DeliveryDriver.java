@@ -23,6 +23,9 @@ public class DeliveryDriver {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name = "gains", precision = 10, scale = 2)
-    private BigDecimal gains;
+    @Column(name = "open" , nullable = false)
+    private Boolean open;
+
+    @Column(name = "earnings", precision = 10, scale = 2)
+    private BigDecimal earnings;
 }
