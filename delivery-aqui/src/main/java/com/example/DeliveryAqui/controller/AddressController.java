@@ -1,8 +1,9 @@
 package com.example.DeliveryAqui.controller;
 
-import com.example.DeliveryAqui.dto.address.AddressPostResquest;
-import com.example.DeliveryAqui.dto.address.AddressPutRequest;
-import com.example.DeliveryAqui.dto.address.AddressResponse;
+import com.example.DeliveryAqui.dtos.address.AddressPostRequest;
+import com.example.DeliveryAqui.dtos.address.AddressPutRequest;
+import com.example.DeliveryAqui.dtos.address.AddressResponse;
+import com.example.DeliveryAqui.dtos.address.AddressSummaryResponse;
 import com.example.DeliveryAqui.service.AddressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class AddressController {
     private final AddressService addressService;
 
     @GetMapping
-    public ResponseEntity<List<AddressResponse>> findAll() {
+    public ResponseEntity<List<AddressSummaryResponse>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(addressService.findAll());
     }
 
@@ -30,7 +31,7 @@ public class AddressController {
     }
 
     @PostMapping
-    public ResponseEntity<AddressResponse> post(@RequestBody @Valid AddressPostResquest postResquest) {
+    public ResponseEntity<AddressResponse> post(@RequestBody @Valid AddressPostRequest postResquest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(addressService.save(postResquest));
     }
 
@@ -40,7 +41,7 @@ public class AddressController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> put(@RequestParam Long id) {
+    public ResponseEntity<Void> delete(@RequestParam Long id) {
         addressService.delete(id);
         return ResponseEntity.noContent().build();
     }

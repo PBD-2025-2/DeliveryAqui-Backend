@@ -1,11 +1,11 @@
-package com.example.DeliveryAqui.dto.address;
+package com.example.DeliveryAqui.dtos.address;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
-public record AddressPostResquest(
+public record AddressPostRequest(
         @NotBlank(message = "Address Line 1 may not be empty.")
         @Size(max = 255)
         String addressLine1,

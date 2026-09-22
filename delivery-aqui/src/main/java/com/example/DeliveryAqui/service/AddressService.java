@@ -1,8 +1,9 @@
 package com.example.DeliveryAqui.service;
 
-import com.example.DeliveryAqui.dto.address.AddressPostResquest;
-import com.example.DeliveryAqui.dto.address.AddressPutRequest;
-import com.example.DeliveryAqui.dto.address.AddressResponse;
+import com.example.DeliveryAqui.dtos.address.AddressPostRequest;
+import com.example.DeliveryAqui.dtos.address.AddressPutRequest;
+import com.example.DeliveryAqui.dtos.address.AddressResponse;
+import com.example.DeliveryAqui.dtos.address.AddressSummaryResponse;
 import com.example.DeliveryAqui.exception.address.AddressInUseException;
 import com.example.DeliveryAqui.exception.address.AddressNotFoundException;
 import com.example.DeliveryAqui.mapper.AddressMapper;
@@ -22,22 +23,22 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
 
-    public List<AddressResponse> findAll() {
+    public List<AddressSummaryResponse> findAll() {
         List<Address> addresses = addressRepository.findAll();
-        return addressMapper.toResponseList(addresses);
+        return addressMapper.entityListToResponse(addresses);
     }
 
     public AddressResponse findById(Long id) throws AddressNotFoundException{
         Optional<Address> address = addressRepository.findById(id);
-        return addressMapper.toResponse(address
+        return addressMapper.entityToResponse(address
                 .orElseThrow(() -> new AddressNotFoundException(id)));
     }
 
     @Transactional
-    public AddressResponse save(AddressPostResquest postResquest) {
-        Address address = addressMapper.toEntity(postResquest);
+    public AddressResponse save(AddressPostRequest postResquest) {
+        Address address = addressMapper.requestToEntity(postResquest);
         Address savedAddress = addressRepository.save(address);
-        return addressMapper.toResponse(savedAddress);
+        return addressMapper.entityToResponse(savedAddress);
     }
 
     @Transactional
@@ -47,7 +48,7 @@ public class AddressService {
 
         addressMapper.updateEntity(addressPutRequest, address);
         addressRepository.save(address);
-        return addressMapper.toResponse(address);
+        return addressMapper.entityToResponse(address);
     }
 
     @Transactional

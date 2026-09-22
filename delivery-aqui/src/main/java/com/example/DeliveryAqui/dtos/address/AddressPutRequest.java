@@ -1,4 +1,4 @@
-package com.example.DeliveryAqui.dto.address;
+package com.example.DeliveryAqui.dtos.address;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
