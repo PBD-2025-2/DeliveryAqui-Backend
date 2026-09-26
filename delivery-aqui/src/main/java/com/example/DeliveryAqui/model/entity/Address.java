@@ -46,6 +46,9 @@ public class Address {
     @Column(name = "number")
     private Integer number;
 
+    @Column(name = "landmark", length = Integer.MAX_VALUE)
+    private String landmark;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
