@@ -4,8 +4,9 @@ import com.example.DeliveryAqui.dtos.address.AddressPostRequest;
 import com.example.DeliveryAqui.dtos.address.AddressPutRequest;
 import com.example.DeliveryAqui.dtos.address.AddressResponse;
 import com.example.DeliveryAqui.dtos.address.AddressSummaryResponse;
-import com.example.DeliveryAqui.exception.address.AddressInUseException;
-import com.example.DeliveryAqui.exception.address.AddressNotFoundException;
+import com.example.DeliveryAqui.enums.ErrorType;
+import com.example.DeliveryAqui.exception.ResourceInUseException;
+import com.example.DeliveryAqui.exception.ResourceNotFoundException;
 import com.example.DeliveryAqui.mapper.AddressMapper;
 import com.example.DeliveryAqui.model.entity.Address;
 import com.example.DeliveryAqui.repository.AddressRepository;
@@ -28,10 +29,10 @@ public class AddressService {
         return addressMapper.entityListToResponse(addresses);
     }
 
-    public AddressResponse findById(Long id) throws AddressNotFoundException{
+    public AddressResponse findById(Long id) {
         Optional<Address> address = addressRepository.findById(id);
         return addressMapper.entityToResponse(address
-                .orElseThrow(() -> new AddressNotFoundException(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Address", id, ErrorType.ADDRESS_NOT_FOUND)));
     }
 
     @Transactional
@@ -44,7 +45,7 @@ public class AddressService {
     @Transactional
     public AddressResponse update(Long id, AddressPutRequest addressPutRequest) {
         Address address = addressRepository.findById(id).orElseThrow(
-                () -> new AddressNotFoundException(id));
+                () -> new ResourceNotFoundException("Address", id, ErrorType.ADDRESS_NOT_FOUND));
 
         addressMapper.updateEntity(addressPutRequest, address);
         addressRepository.save(address);
@@ -54,13 +55,13 @@ public class AddressService {
     @Transactional
     public void delete(Long id) {
         Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new AddressNotFoundException(id));
+                .orElseThrow(() -> new ResourceNotFoundException("Address", id, ErrorType.ADDRESS_NOT_FOUND));
 
         try {
             addressRepository.delete(address);
             addressRepository.flush();
         } catch (DataIntegrityViolationException ex) {
-            throw new AddressInUseException(id);
+            throw new ResourceInUseException("Address", id, ErrorType.ADDRESS_IN_USE);
         }
     }
 }
