@@ -4,6 +4,9 @@ import com.example.DeliveryAqui.dtos.personAddress.PersonAddressPostRequest;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressPutRequest;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressResponse;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressSummaryResponse;
+import com.example.DeliveryAqui.enums.ErrorType;
+import com.example.DeliveryAqui.exception.ResourceExistsException;
+import com.example.DeliveryAqui.exception.ResourceNotFoundException;
 import com.example.DeliveryAqui.mapper.PersonAddressMapper;
 import com.example.DeliveryAqui.model.entity.Address;
 import com.example.DeliveryAqui.model.entity.Person;
@@ -11,8 +14,6 @@ import com.example.DeliveryAqui.model.entity.PersonAddress;
 import com.example.DeliveryAqui.repository.AddressRepository;
 import com.example.DeliveryAqui.repository.PersonAddressRepository;
 import com.example.DeliveryAqui.repository.PersonRepository;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class PersonAddressService {
 
     public PersonAddressResponse findById(Long id) {
         PersonAddress personAddress = personAddressRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Person not found with the ID address: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Person Address",id, ErrorType.PERSON_ADDRESS_NOT_FOUND));
 
         return personAddressMapper.entityToResponse(personAddress);
     }
@@ -50,13 +51,17 @@ public class PersonAddressService {
     @Transactional
     public PersonAddressResponse save(@NonNull PersonAddressPostRequest request) {
         Person person = personRepository.findById(request.personId())
-                .orElseThrow(() -> new EntityNotFoundException("Person not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Person", request.personId(), ErrorType.PERSON_NOT_FOUND));
 
         Address address = addressRepository.findById(request.addressId())
-                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address", request.addressId(), ErrorType.ADDRESS_NOT_FOUND));
 
         if (personAddressRepository.existsByPerson_IdAndAddress_Id(request.personId(), request.addressId())) {
-            throw  new EntityExistsException("This address already exists for this person.");
+            throw  new ResourceExistsException(
+                    "Person Address",
+                    "personId=" + request.personId() + ", addressId=" + request.addressId(),
+                    ErrorType.PERSON_ADDRESS_ALREADY_EXISTS
+            );
         }
 
         boolean isFirstAddress = personAddressRepository.countByPerson_Id(person.getId()) == 0;
@@ -76,13 +81,13 @@ public class PersonAddressService {
     @Transactional
     public PersonAddressResponse update(Long id, @NonNull PersonAddressPutRequest request) {
         PersonAddress personAddress = personAddressRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Person address not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Person Address",id, ErrorType.PERSON_ADDRESS_NOT_FOUND));
 
         Person person = personRepository.findById(request.personId())
-                .orElseThrow(() -> new EntityNotFoundException("Person not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Person", request.personId(), ErrorType.PERSON_NOT_FOUND));
 
         Address address = addressRepository.findById(request.addressId())
-                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Address", request.addressId(), ErrorType.ADDRESS_NOT_FOUND));
 
         personAddressMapper.updateEntity(request, personAddress);
         personAddress.setPerson(person);
@@ -95,7 +100,7 @@ public class PersonAddressService {
     @Transactional
     public PersonAddressResponse switchFavorite(Long id) {
         PersonAddress personAddress = personAddressRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Person address not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Person Address",id, ErrorType.PERSON_ADDRESS_NOT_FOUND));
 
         if (Boolean.TRUE.equals(personAddress.getIsFavorite())) {
             return personAddressMapper.entityToResponse(personAddress);
