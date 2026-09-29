@@ -48,6 +48,12 @@ public class PersonAddressService {
                 .map(personAddressMapper::entityToSummaryResponse).toList();
     }
 
+    public PersonAddressResponse findFavoriteAddress(Long personId) {
+        PersonAddress personAddress = personAddressRepository.findByPerson_IdAndIsFavoriteTrue(personId)
+                .orElseThrow(() -> new ResourceNotFoundException("Person Address", personId, ErrorType.ADDRESS_NOT_FOUND));
+        return personAddressMapper.entityToResponse(personAddress);
+    }
+
     @Transactional
     public PersonAddressResponse save(@NonNull PersonAddressPostRequest request) {
         Person person = personRepository.findById(request.personId())

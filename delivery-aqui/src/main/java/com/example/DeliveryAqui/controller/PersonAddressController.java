@@ -1,7 +1,5 @@
 package com.example.DeliveryAqui.controller;
 
-import com.example.DeliveryAqui.dtos.address.AddressPostRequest;
-import com.example.DeliveryAqui.dtos.address.AddressResponse;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressPostRequest;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressPutRequest;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressResponse;
@@ -27,13 +25,18 @@ public class PersonAddressController {
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<PersonAddressResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<PersonAddressResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(personAddressService.findById(id));
     }
 
     @GetMapping("/cpf/{cpf}")
     public ResponseEntity<List<PersonAddressSummaryResponse>> findByCpf(@PathVariable String cpf) {
         return ResponseEntity.status(HttpStatus.OK).body(personAddressService.findByCpf(cpf));
+    }
+
+    @GetMapping("/person/{id}/favorite")
+    public ResponseEntity<PersonAddressResponse> findFavoriteAddress(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(personAddressService.findFavoriteAddress(id));
     }
 
     @PostMapping
