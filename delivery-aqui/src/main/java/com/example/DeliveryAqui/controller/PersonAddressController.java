@@ -4,14 +4,19 @@ import com.example.DeliveryAqui.dtos.personAddress.PersonAddressPostRequest;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressPutRequest;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressResponse;
 import com.example.DeliveryAqui.dtos.personAddress.PersonAddressSummaryResponse;
+import com.example.DeliveryAqui.dtos.shared.PaginatedResponse;
+import com.example.DeliveryAqui.enums.PersonAddressSortField;
 import com.example.DeliveryAqui.service.PersonAddressService;
+import com.example.DeliveryAqui.util.PaginationUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,8 +25,15 @@ public class PersonAddressController {
     private final PersonAddressService personAddressService;
 
     @GetMapping
-    public ResponseEntity<List<PersonAddressSummaryResponse>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(personAddressService.findAll());
+    public ResponseEntity<PaginatedResponse<PersonAddressSummaryResponse>> findAll(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "ID") PersonAddressSortField sortField,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction
+    ) {
+        Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(direction, sortField.getField()));
+        Page<PersonAddressSummaryResponse> page = personAddressService.findAll(pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(PaginationUtils.buildPaginatedResponse(page));
     }
 
     @GetMapping("/id/{id}")
@@ -30,8 +42,16 @@ public class PersonAddressController {
     }
 
     @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<List<PersonAddressSummaryResponse>> findByCpf(@PathVariable String cpf) {
-        return ResponseEntity.status(HttpStatus.OK).body(personAddressService.findByCpf(cpf));
+    public ResponseEntity<PaginatedResponse<PersonAddressSummaryResponse>> findByCpf(
+            @PathVariable String cpf,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "ID") PersonAddressSortField sortField,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction
+    ) {
+        Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(direction, sortField.getField()));
+        Page<PersonAddressSummaryResponse> page = personAddressService.findByCpf(cpf, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(PaginationUtils.buildPaginatedResponse(page));
     }
 
     @GetMapping("/person/{id}/favorite")

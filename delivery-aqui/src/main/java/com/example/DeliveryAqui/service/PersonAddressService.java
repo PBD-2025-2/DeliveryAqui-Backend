@@ -16,6 +16,8 @@ import com.example.DeliveryAqui.repository.PersonAddressRepository;
 import com.example.DeliveryAqui.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +31,9 @@ public class PersonAddressService {
     private final PersonRepository personRepository;
     private final AddressRepository addressRepository;
 
-    public List<PersonAddressSummaryResponse> findAll() {
-        return personAddressRepository.findAll()
-                .stream()
-                .map(personAddressMapper::entityToSummaryResponse).toList();
+    public Page<PersonAddressSummaryResponse> findAll(Pageable pageable) {
+        Page<PersonAddress> personAddresses = personAddressRepository.findAll(pageable);
+        return personAddresses.map(personAddressMapper::entityToSummaryResponse);
     }
 
     public PersonAddressResponse findById(Long id) {
@@ -42,10 +43,9 @@ public class PersonAddressService {
         return personAddressMapper.entityToResponse(personAddress);
     }
 
-    public List<PersonAddressSummaryResponse> findByCpf(String cpf) {
-        return personAddressRepository.findByPerson_Cpf(cpf)
-                .stream()
-                .map(personAddressMapper::entityToSummaryResponse).toList();
+    public Page<PersonAddressSummaryResponse> findByCpf(String cpf, Pageable pageable) {
+        Page<PersonAddress> personAddresses = personAddressRepository.findByPerson_Cpf(cpf, pageable);
+        return personAddresses.map(personAddressMapper::entityToSummaryResponse);
     }
 
     public PersonAddressResponse findFavoriteAddress(Long personId) {
