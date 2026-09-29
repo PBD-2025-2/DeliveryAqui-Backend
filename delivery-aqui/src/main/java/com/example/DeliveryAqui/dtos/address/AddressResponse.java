@@ -1,5 +1,7 @@
 package com.example.DeliveryAqui.dtos.address;
 
+import java.time.Instant;
+
 public record AddressResponse(
         Long id,
         String addressLine1,
@@ -8,6 +10,9 @@ public record AddressResponse(
         String city,
         String state,
         String postalCode,
-        Integer number
+        Integer number,
+        String landmark,
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }

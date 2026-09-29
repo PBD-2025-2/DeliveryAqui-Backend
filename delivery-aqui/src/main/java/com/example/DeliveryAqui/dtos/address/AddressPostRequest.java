@@ -30,6 +30,9 @@ public record AddressPostRequest(
         String postalCode,
 
         @Positive(message = "Number must be greater than zero.")
-        Integer number
+        Integer number,
+
+        @NotBlank(message = "Landmark may not be empty.")
+        String landmark
 ) {
 }
