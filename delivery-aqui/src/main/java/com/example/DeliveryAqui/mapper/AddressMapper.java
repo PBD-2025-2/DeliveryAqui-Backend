@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
     AddressResponse entityToResponse(Address address);
-    List<AddressSummaryResponse> entityListToResponse(List<Address> addresses);
+    AddressSummaryResponse entityToSummaryResponse(Address address);
 
     Address requestToEntity(AddressPostRequest request);
     void updateEntity(AddressPutRequest putRequest, @MappingTarget Address address);
