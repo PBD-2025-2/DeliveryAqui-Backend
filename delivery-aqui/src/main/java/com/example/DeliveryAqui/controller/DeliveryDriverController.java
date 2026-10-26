@@ -14,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/deliveryDrivers")
+@RequestMapping("api/v1/deliveryDrivers")
 public class DeliveryDriverController {
 
     private final DeliveryDriverService deliveryDriverService;

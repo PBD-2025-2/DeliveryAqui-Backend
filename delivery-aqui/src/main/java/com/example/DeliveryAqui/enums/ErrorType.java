@@ -6,6 +6,9 @@ import lombok.Getter;
 public enum ErrorType {
     VALIDATION_ERROR("validation-error"),
     ADDRESS_NOT_FOUND("address-not-found"),
+    STORE_NOT_FOUND("store-not-found"),
+    PRODUCT_NOT_FOUND("product-not-found"),
+    CATEGORY_NOT_FOUND("category-not-found"),
     ADDRESS_IN_USE("address-in-use");
 
     private static final String PREFIX_URI = "/errors/";

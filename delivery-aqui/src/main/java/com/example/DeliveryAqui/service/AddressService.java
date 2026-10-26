@@ -11,6 +11,8 @@ import com.example.DeliveryAqui.model.entity.Address;
 import com.example.DeliveryAqui.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +25,9 @@ public class AddressService {
     private final AddressRepository addressRepository;
     private final AddressMapper addressMapper;
 
-    public List<AddressSummaryResponse> findAll() {
-        List<Address> addresses = addressRepository.findAll();
-        return addressMapper.entityListToResponse(addresses);
+    public Page<AddressSummaryResponse> findAll(Pageable pageable) {
+        Page<Address> addresses = addressRepository.findAll(pageable);
+        return addresses.map(addressMapper::entityToSummaryResponse);
     }
 
     public AddressResponse findById(Long id) throws AddressNotFoundException{
