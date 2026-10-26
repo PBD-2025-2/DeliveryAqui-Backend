@@ -10,5 +10,4 @@ public record PaginatedResponse<T>(
         int pageSize,
         boolean hasNext,
         boolean hasPrevious
-) {
-}
+) {}

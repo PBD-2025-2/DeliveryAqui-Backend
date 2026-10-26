@@ -16,13 +16,23 @@ public class Category {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "parent_id", nullable = true)
+    private Category parent;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "store_id")
     private Store store;
 
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Column(name = "position", nullable = false)
+    private Integer position;
 
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
+
+    @Column(name = "path")
+    private String path;
 }

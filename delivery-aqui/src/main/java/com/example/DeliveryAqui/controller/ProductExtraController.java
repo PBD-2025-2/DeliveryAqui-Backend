@@ -4,6 +4,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/productExtra")
+@RequestMapping("api/v1/productExtra")
 public class ProductExtraController {
 }

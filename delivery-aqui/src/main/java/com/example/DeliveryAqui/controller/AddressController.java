@@ -32,11 +32,14 @@ public class AddressController {
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "ID") AddressSortField sortField,
-            @RequestParam(defaultValue = "ASC")Sort.Direction direction
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction
     ) {
         Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(direction, sortField.getField()));
         Page<AddressSummaryResponse> page = addressService.findAll(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(PaginationUtils.buildPaginatedResponse(page));
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(PaginationUtils.buildPaginatedResponse(page));
     }
 
     @GetMapping(path = "/id/{id}")
