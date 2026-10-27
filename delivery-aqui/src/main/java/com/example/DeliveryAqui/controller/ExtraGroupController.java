@@ -3,6 +3,7 @@ package com.example.DeliveryAqui.controller;
 import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPostRequest;
 import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPutRequest;
 import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupResponse;
+import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupSummaryResponse;
 import com.example.DeliveryAqui.dtos.shared.PaginatedResponse;
 import com.example.DeliveryAqui.enums.ExtraGroupSortField;
 import com.example.DeliveryAqui.service.ExtraGroupService;
@@ -24,14 +25,14 @@ public class ExtraGroupController {
     private final ExtraGroupService extraGroupService;
 
     @GetMapping
-    public ResponseEntity<PaginatedResponse<ExtraGroupResponse>> findAll(
+    public ResponseEntity<PaginatedResponse<ExtraGroupSummaryResponse>> findAll(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "ID") ExtraGroupSortField sortField,
             @RequestParam(defaultValue = "ASC") Sort.Direction direction
     ) {
         Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(direction, sortField.getField()));
-        Page<ExtraGroupResponse> page = extraGroupService.findAll(pageable);
+        Page<ExtraGroupSummaryResponse> page = extraGroupService.findAll(pageable);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -44,7 +45,7 @@ public class ExtraGroupController {
     }
 
     @GetMapping(path = "/name/{name}")
-    public ResponseEntity<PaginatedResponse<ExtraGroupResponse>> findByName(
+    public ResponseEntity<PaginatedResponse<ExtraGroupSummaryResponse>> findByName(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "ID") ExtraGroupSortField sortField,
@@ -52,7 +53,7 @@ public class ExtraGroupController {
             @PathVariable String name
     ) {
         Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(direction, sortField.getField()));
-        Page<ExtraGroupResponse> page = extraGroupService.findByName(name, pageable);
+        Page<ExtraGroupSummaryResponse> page = extraGroupService.findByName(name, pageable);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

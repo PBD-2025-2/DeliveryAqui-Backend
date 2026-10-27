@@ -3,6 +3,7 @@ package com.example.DeliveryAqui.service;
 import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPostRequest;
 import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPutRequest;
 import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupResponse;
+import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupSummaryResponse;
 import com.example.DeliveryAqui.enums.ErrorType;
 import com.example.DeliveryAqui.exception.ResourceNotFoundException;
 import com.example.DeliveryAqui.mapper.ExtraGroupMapper;
@@ -22,9 +23,9 @@ public class ExtraGroupService {
     private final ExtraGroupRepository extraGroupRepository;
     private final ExtraGroupMapper extraGroupMapper;
 
-    public Page<ExtraGroupResponse> findAll(Pageable pageable) {
+    public Page<ExtraGroupSummaryResponse> findAll(Pageable pageable) {
         Page<ExtraGroup> extraGroups = extraGroupRepository.findAll(pageable);
-        return extraGroups.map(extraGroupMapper::entityToResponse);
+        return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
     }
 
     public ExtraGroupResponse findById(Long id) {
@@ -33,9 +34,9 @@ public class ExtraGroupService {
                 .orElseThrow(() -> new ResourceNotFoundException("Extra Group", id, ErrorType.EXTRA_GROUP_NOT_FOUND)));
     }
 
-    public  Page<ExtraGroupResponse> findByName(String name, Pageable pageable) {
+    public  Page<ExtraGroupSummaryResponse> findByName(String name, Pageable pageable) {
         Page<ExtraGroup> extraGroups = extraGroupRepository.findByNameContainsIgnoreCase(name, pageable);
-        return extraGroups.map(extraGroupMapper::entityToResponse);
+        return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
     }
 
     @Transactional
