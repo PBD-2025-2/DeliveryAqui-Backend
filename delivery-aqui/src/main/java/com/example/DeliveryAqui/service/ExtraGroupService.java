@@ -15,10 +15,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ExtraGroupService {
     private final ExtraGroupRepository extraGroupRepository;
     private final ExtraGroupMapper extraGroupMapper;
@@ -29,9 +28,9 @@ public class ExtraGroupService {
     }
 
     public ExtraGroupResponse findById(Long id) {
-        Optional<ExtraGroup> extraGroup = extraGroupRepository.findById(id);
-        return extraGroupMapper.entityToResponse(extraGroup
-                .orElseThrow(() -> new ResourceNotFoundException("Extra Group", id, ErrorType.EXTRA_GROUP_NOT_FOUND)));
+        ExtraGroup extraGroup = extraGroupRepository.findWithExtrasById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Extra Group", id, ErrorType.EXTRA_GROUP_NOT_FOUND));
+        return extraGroupMapper.entityToResponse(extraGroup);
     }
 
     public  Page<ExtraGroupSummaryResponse> findByName(String name, Pageable pageable) {
@@ -39,9 +38,15 @@ public class ExtraGroupService {
         return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
     }
 
+    public  Page<ExtraGroupSummaryResponse> findByStore(Long storeId, Pageable pageable) {
+        Page<ExtraGroup> extraGroups = extraGroupRepository.findByStore_Id(storeId, pageable);
+        return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
+    }
+
     @Transactional
-    public ExtraGroupResponse save(ExtraGroupPostRequest postResquest) {
-        ExtraGroup  extraGroup = extraGroupMapper.requestToEntity(postResquest);
+    public ExtraGroupResponse save(ExtraGroupPostRequest postRequest) {
+        // Buscar loja antes para mapear (storeService.findById(postRequest.storeid)
+        ExtraGroup  extraGroup = extraGroupMapper.requestToEntity(postRequest);
         extraGroupRepository.save(extraGroup);
         return extraGroupMapper.entityToResponse(extraGroup);
     }

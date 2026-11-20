@@ -60,9 +60,25 @@ public class ExtraGroupController {
                 .body(PaginationUtils.buildPaginatedResponse(page));
     }
 
+    @GetMapping(path = "/store/{storeId}")
+    public ResponseEntity<PaginatedResponse<ExtraGroupSummaryResponse>> findByStore(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "ID") ExtraGroupSortField sortField,
+            @RequestParam(defaultValue = "ASC") Sort.Direction direction,
+            @PathVariable Long storeId
+    ) {
+        Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(direction, sortField.getField()));
+        Page<ExtraGroupSummaryResponse> page = extraGroupService.findByStore(storeId, pageable);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(PaginationUtils.buildPaginatedResponse(page));
+    }
+
     @PostMapping
-    public ResponseEntity<ExtraGroupResponse> post(@RequestBody @Valid ExtraGroupPostRequest postResquest) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(extraGroupService.save(postResquest));
+    public ResponseEntity<ExtraGroupResponse> post(@RequestBody @Valid ExtraGroupPostRequest postRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(extraGroupService.save(postRequest));
     }
 
     @PutMapping

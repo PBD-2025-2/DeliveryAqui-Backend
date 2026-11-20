@@ -5,8 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,4 +40,9 @@ public class ExtraGroup {
     @NotNull
     @Column(name = "max_select", nullable = false)
     private Short maxSelect;
+
+    @OneToMany(mappedBy = "extraGroup")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @BatchSize(size = 50)
+    List<Extra> extras = new ArrayList<>();
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.*;
 
 public record ExtraGroupPostRequest(
         @Positive(message = "Store ID must be greater than zero.")
-        Integer storeId,
+        Long storeId,
 
         @NotBlank(message = "Name number may not be empty.")
         @Size(max = 255)
