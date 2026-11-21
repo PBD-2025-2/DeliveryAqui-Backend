@@ -1,10 +1,11 @@
 package com.example.DeliveryAqui.dtos.store;
 
+import com.example.DeliveryAqui.dtos.address.AddressSummaryResponse;
+
 public record StoreResponse (
         Long id,
-        Long addressId,
+        AddressSummaryResponse address,
         String name,
-        String phone,
         String cnpj,
         String email,
         String phoneNumber
