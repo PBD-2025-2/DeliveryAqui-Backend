@@ -109,6 +109,4 @@ public class ProductController {
                 .status(HttpStatus.OK)
                 .body(PaginationUtils.buildPaginatedResponse(page));
     }
-
-
 }
