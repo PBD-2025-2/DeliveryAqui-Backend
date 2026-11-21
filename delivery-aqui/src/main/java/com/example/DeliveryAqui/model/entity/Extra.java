@@ -1,10 +1,10 @@
 package com.example.DeliveryAqui.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 
@@ -18,22 +18,19 @@ public class Extra {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "store_id")
-    private Store store;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "extra_group_id", nullable = false)
+    private ExtraGroup extraGroup;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "flavor")
-    private String flavor;
-
-    @Column(name = "size", length = 100)
-    private String size;
-
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-
+    @NotNull
+    @ColumnDefault("true")
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable;
 }
