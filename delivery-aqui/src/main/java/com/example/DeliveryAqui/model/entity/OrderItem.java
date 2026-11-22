@@ -1,6 +1,7 @@
 package com.example.DeliveryAqui.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
@@ -20,13 +21,13 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "orders_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order orders;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "product_variant_id", nullable = false)
-    private ProductVariant productVariant;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Column(name = "quantity", nullable = false)
     private Long quantity;
@@ -36,6 +37,4 @@ public class OrderItem {
 
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice;
-
-
 }
