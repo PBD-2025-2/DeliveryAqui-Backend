@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring", uses = ExtraMapper.class)
+@Mapper(componentModel = "spring", uses = { StoreMapper.class, ExtraMapper.class })
 public interface ExtraGroupMapper {
     ExtraGroupResponse entityToResponse(ExtraGroup extraGroup);
 
