@@ -8,7 +8,9 @@ import com.example.DeliveryAqui.enums.ErrorType;
 import com.example.DeliveryAqui.exception.ResourceNotFoundException;
 import com.example.DeliveryAqui.mapper.ExtraGroupMapper;
 import com.example.DeliveryAqui.model.entity.ExtraGroup;
+import com.example.DeliveryAqui.model.entity.Store;
 import com.example.DeliveryAqui.repository.ExtraGroupRepository;
+import com.example.DeliveryAqui.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExtraGroupService {
     private final ExtraGroupRepository extraGroupRepository;
     private final ExtraGroupMapper extraGroupMapper;
+    private final StoreRepository storeRepository;
 
     public Page<ExtraGroupSummaryResponse> findAll(Pageable pageable) {
         Page<ExtraGroup> extraGroups = extraGroupRepository.findAll(pageable);
@@ -45,8 +48,12 @@ public class ExtraGroupService {
 
     @Transactional
     public ExtraGroupResponse save(ExtraGroupPostRequest postRequest) {
-        // Buscar loja antes para mapear (storeService.findById(postRequest.storeid)
+        Store store = storeRepository.findById(postRequest.storeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Store", postRequest.storeId(), ErrorType.STORE_NOT_FOUND));
+
         ExtraGroup  extraGroup = extraGroupMapper.requestToEntity(postRequest);
+        extraGroup.setStore(store);
+
         extraGroupRepository.save(extraGroup);
         return extraGroupMapper.entityToResponse(extraGroup);
     }
