@@ -9,6 +9,7 @@ public record ExtraResponse(
         ExtraGroupSummaryResponse extraGroup,
         String name,
         BigDecimal price,
-        Boolean isAvailable
-) {
-}
+        Boolean isAvailable,
+        Short minQuantity,
+        Short maxQuantity
+) {}
