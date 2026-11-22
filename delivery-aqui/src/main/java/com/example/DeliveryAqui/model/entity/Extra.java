@@ -1,8 +1,11 @@
 package com.example.DeliveryAqui.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -18,22 +21,33 @@ public class Extra {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "store_id")
-    private Store store;
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "extra_group_id", nullable = false)
+    private ExtraGroup extraGroup;
 
+    @Size(max = 255)
+    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "flavor")
-    private String flavor;
-
-    @Column(name = "size", length = 100)
-    private String size;
-
+    @NotNull
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
+    @NotNull
+    @ColumnDefault("false")
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable;
 
+    @NotNull
+    @ColumnDefault("0")
+    @Column(name = "min_quantity", nullable = false)
+    private Short minQuantity;
+
+    @NotNull
+    @ColumnDefault("1")
+    @Column(name = "max_quantity", nullable = false)
+    private Short maxQuantity;
 }

@@ -8,8 +8,6 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface StoreMapper {
-
-    @Mapping(source = "address.id", target = "addressId")
     StoreResponse entityToResponse(Store store);
 
     @Mapping(source = "address.id", target = "addressId")
