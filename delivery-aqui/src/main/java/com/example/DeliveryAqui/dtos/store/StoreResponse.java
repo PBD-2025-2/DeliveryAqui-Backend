@@ -1,12 +1,13 @@
 package com.example.DeliveryAqui.dtos.store;
 
-import com.example.DeliveryAqui.dtos.address.AddressSummaryResponse;
+import java.time.Instant;
 
-public record StoreResponse (
+public record StoreResponse(
         Long id,
-        AddressSummaryResponse address,
         String name,
         String cnpj,
+        String phoneNumber,
         String email,
-        String phoneNumber
+        Instant createdAt,
+        Instant updatedAt
 ) {}

@@ -1,8 +1,9 @@
 package com.example.DeliveryAqui.dtos.store;
 
+import java.time.Instant;
+
 public record StoreSummaryResponse(
         Long id,
-        Long addressId,
         String name,
-        String phoneNumber
+        Instant updatedAt
 ) {}

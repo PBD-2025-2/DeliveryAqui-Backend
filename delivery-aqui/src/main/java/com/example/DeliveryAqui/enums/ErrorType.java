@@ -11,6 +11,7 @@ public enum ErrorType {
     PERSON_ADDRESS_NOT_FOUND("person-address-not-found"),
     PERSON_ADDRESS_ALREADY_EXISTS("person-address-already-exists"),
     STORE_NOT_FOUND("store-not-found"),
+    STORE_IN_USE("store-in-use");
     PRODUCT_NOT_FOUND("product-not-found"),
     CATEGORY_NOT_FOUND("category-not-found"),
     EXTRA_NOT_FOUND("extra-not-found"),

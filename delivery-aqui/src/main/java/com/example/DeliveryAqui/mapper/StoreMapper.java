@@ -1,16 +1,21 @@
 package com.example.DeliveryAqui.mapper;
 
+
+import com.example.DeliveryAqui.dtos.store.StorePostRequest;
+import com.example.DeliveryAqui.dtos.store.StorePutRequest;
 import com.example.DeliveryAqui.dtos.store.StoreResponse;
 import com.example.DeliveryAqui.dtos.store.StoreSummaryResponse;
 import com.example.DeliveryAqui.model.entity.Store;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface StoreMapper {
-    StoreResponse entityToResponse(Store store);
 
-    @Mapping(source = "address.id", target = "addressId")
-    StoreSummaryResponse entityToSummaryResponse(Store store);
+    StoreSummaryResponse entityToStoreSummaryResponse(Store store);
 
+    StoreResponse entityToStoreResponse(Store store);
+
+    Store responseToEntity (StorePostRequest storePostRequest);
+    @Mapping(target = "id", ignore = true)
+    void updateEntity(StorePutRequest storePutRequest, @MappingTarget Store store);
 }
