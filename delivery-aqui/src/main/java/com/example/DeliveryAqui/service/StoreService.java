@@ -80,10 +80,13 @@ public class StoreService {
 
     @Transactional
     public StoreResponse update(Long id, StorePutRequest storePutRequest){
+        AddressResponse addressResponse = addressService.findById(storePostRequest.address_id());
+        Address address = addressMapper.responseToEntity(addressResponse);
         Store store = storeRepository.findById(id).orElseThrow(
-                () -> new AddressNotFoundException(id));
+                () -> new StoreNotFoundException(id));
         storeMapper.updateEntity(storePutRequest, store);
         store.setUpdatedAt(Instant.now());
+        store.setAddress(address);
         storeRepository.save(store);
         return storeMapper.entityToStoreResponse(store);
     }
