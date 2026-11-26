@@ -1,7 +1,10 @@
 package com.example.DeliveryAqui.dtos.extraGroup;
 
+import com.example.DeliveryAqui.dtos.extra.ExtraInlineRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
+
+import java.util.List;
 
 public record ExtraGroupPostRequest(
         @Positive(message = "Store ID must be greater than zero.")
@@ -17,7 +20,9 @@ public record ExtraGroupPostRequest(
 
         @NotNull(message = "Max select is required")
         @Positive(message = "Max select must be zero or greater.")
-        Short maxSelect
+        Short maxSelect,
+
+        List<ExtraInlineRequest>newExtras
 ) {
         @JsonIgnore
         @AssertTrue(message = "Min select must be less than o equal to max select")
