@@ -7,8 +7,6 @@ public record ExtraSummaryResponse(
         Long extraGroupId,
         String name,
         BigDecimal price,
-        Boolean isAvailable,
-        Short minQuantity,
-        Short maxQuantity
+        Boolean isAvailable
 ) {
 }
