@@ -1,9 +1,6 @@
 package com.example.DeliveryAqui.controller;
 
-import com.example.DeliveryAqui.dtos.extra.ExtraPostRequest;
-import com.example.DeliveryAqui.dtos.extra.ExtraPutRequest;
-import com.example.DeliveryAqui.dtos.extra.ExtraResponse;
-import com.example.DeliveryAqui.dtos.extra.ExtraSummaryResponse;
+import com.example.DeliveryAqui.dtos.extra.*;
 import com.example.DeliveryAqui.dtos.shared.PaginatedResponse;
 import com.example.DeliveryAqui.enums.ExtraSortField;
 import com.example.DeliveryAqui.service.ExtraService;
@@ -17,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,6 +82,11 @@ public class ExtraController {
     @PostMapping
     public ResponseEntity<ExtraResponse> post(@RequestBody @Valid ExtraPostRequest postRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(extraService.save(postRequest));
+    }
+
+    @PostMapping(path = "/batch")
+    public ResponseEntity<List<ExtraSummaryResponse>> post(@RequestBody @Valid ExtraBatchPostRequest postRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(extraService.saveAll(postRequest));
     }
 
     @PutMapping

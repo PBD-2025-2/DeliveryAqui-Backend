@@ -1,9 +1,6 @@
 package com.example.DeliveryAqui.service;
 
-import com.example.DeliveryAqui.dtos.extra.ExtraPostRequest;
-import com.example.DeliveryAqui.dtos.extra.ExtraPutRequest;
-import com.example.DeliveryAqui.dtos.extra.ExtraResponse;
-import com.example.DeliveryAqui.dtos.extra.ExtraSummaryResponse;
+import com.example.DeliveryAqui.dtos.extra.*;
 import com.example.DeliveryAqui.enums.ErrorType;
 import com.example.DeliveryAqui.exception.ResourceNotFoundException;
 import com.example.DeliveryAqui.mapper.ExtraMapper;
@@ -17,7 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,26 @@ public class ExtraService {
     public Page<ExtraSummaryResponse> findAll(Pageable pageable) {
         Page<Extra> extras = extraRepository.findAll(pageable);
         return extras.map(extraMapper::entityToSummaryResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Extra> findAllByIdsAndStoreId(List<Long> ids, Long storeId) {
+        Set<Long> distinctIds = new HashSet<>(ids);
+        List<Extra> extras = extraRepository.findAllByIdInAndExtraGroup_Store_Id(ids, storeId);
+
+        if (extras.size() != distinctIds.size()) {
+            Set<Long> foundIds = extras.stream()
+                    .map(Extra::getId)
+                    .collect(Collectors.toSet());
+
+            List<Long> notFoundIds = distinctIds.stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .distinct()
+                    .toList();
+
+            throw new ResourceNotFoundException("Extras", notFoundIds, ErrorType.EXTRA_NOT_FOUND);
+        }
+        return extras;
     }
 
     public ExtraResponse findById(Long id) {
@@ -63,6 +84,26 @@ public class ExtraService {
 
         extraRepository.save(extra);
         return extraMapper.entityToResponse(extra);
+    }
+
+    @Transactional
+    public List<ExtraSummaryResponse> saveAll(ExtraBatchPostRequest batchPostRequest) {
+        ExtraGroup extraGroup = extraGroupRepository.findById(batchPostRequest.extraGroupId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Extra Group", batchPostRequest.extraGroupId(), ErrorType.EXTRA_GROUP_NOT_FOUND));
+
+        List<Extra> extras = extraMapper.requestToEntity(batchPostRequest.extras());
+        extras.forEach(extra -> extra.setExtraGroup(extraGroup));
+
+        extras = extraRepository.saveAll(extras);
+        return extraMapper.entityToSummaryResponse(extras);
+    }
+
+    @Transactional
+    public List<Extra> saveAll(List<ExtraInlineRequest> postRequests, ExtraGroup extraGroup) {
+        List<Extra> extras = extraMapper.requestToEntity(postRequests);
+        extras.forEach(extra -> extra.setExtraGroup(extraGroup));;
+        return extraRepository.saveAll(extras);
     }
 
     @Transactional

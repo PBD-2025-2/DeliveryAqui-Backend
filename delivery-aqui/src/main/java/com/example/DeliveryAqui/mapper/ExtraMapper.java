@@ -1,15 +1,12 @@
 package com.example.DeliveryAqui.mapper;
 
-import com.example.DeliveryAqui.dtos.extra.ExtraPostRequest;
-import com.example.DeliveryAqui.dtos.extra.ExtraPutRequest;
-import com.example.DeliveryAqui.dtos.extra.ExtraResponse;
-import com.example.DeliveryAqui.dtos.extra.ExtraSummaryResponse;
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupSummaryResponse;
+import com.example.DeliveryAqui.dtos.extra.*;
 import com.example.DeliveryAqui.model.entity.Extra;
-import com.example.DeliveryAqui.model.entity.ExtraGroup;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ExtraMapper {
@@ -17,12 +14,13 @@ public interface ExtraMapper {
 
     @Mapping(source = "extraGroup.id", target = "extraGroupId")
     ExtraSummaryResponse entityToSummaryResponse(Extra extra);
+    List<ExtraSummaryResponse> entityToSummaryResponse(List<Extra> extras);
 
     @Mapping(source = "extraGroupId", target = "extraGroup.id")
     Extra requestToEntity(ExtraPostRequest request);
 
-    void updateEntity(ExtraPutRequest putRequest, @MappingTarget Extra extra);
+    Extra requestToEntity(ExtraInlineRequest request);
+    List<Extra> requestToEntity(List<ExtraInlineRequest> requests);
 
-    @Mapping(source = "store.id", target = "storeId")
-    ExtraGroupSummaryResponse entityToSummaryResponse(ExtraGroup extraGroup);
+    void updateEntity(ExtraPutRequest putRequest, @MappingTarget Extra extra);
 }
