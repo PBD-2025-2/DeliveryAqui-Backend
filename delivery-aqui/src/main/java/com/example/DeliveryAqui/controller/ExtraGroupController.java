@@ -1,9 +1,6 @@
 package com.example.DeliveryAqui.controller;
 
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPostRequest;
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPutRequest;
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupResponse;
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupSummaryResponse;
+import com.example.DeliveryAqui.dtos.extraGroup.*;
 import com.example.DeliveryAqui.dtos.shared.PaginatedResponse;
 import com.example.DeliveryAqui.enums.ExtraGroupSortField;
 import com.example.DeliveryAqui.service.ExtraGroupService;
@@ -17,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -79,6 +78,11 @@ public class ExtraGroupController {
     @PostMapping
     public ResponseEntity<ExtraGroupResponse> post(@RequestBody @Valid ExtraGroupPostRequest postRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(extraGroupService.save(postRequest));
+    }
+
+    @PostMapping(path = "/batch")
+    public ResponseEntity<List<ExtraGroupDetailResponse>>post(@RequestBody @Valid ExtraGroupBatchPostRequest postRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(extraGroupService.saveAll(postRequest));
     }
 
     @PutMapping
