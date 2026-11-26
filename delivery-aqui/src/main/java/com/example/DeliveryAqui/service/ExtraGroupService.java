@@ -68,6 +68,7 @@ public class ExtraGroupService {
         return extraGroupMapper.entityToResponse(extraGroup);
     }
 
+    @Transactional
     public List<ExtraGroupDetailResponse> saveAll(ExtraGroupBatchPostRequest batchPostRequest) {
         Store store = storeRepository.findById(batchPostRequest.storeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Store", batchPostRequest.storeId(), ErrorType.STORE_NOT_FOUND));
@@ -77,6 +78,7 @@ public class ExtraGroupService {
         return extraGroupMapper.entityToDetailResponse(extraGroups);
     }
 
+    @Transactional
     public List<ExtraGroup> saveAll(List<ExtraGroupInlineRequest> requests, Store store) {
         List<ExtraGroup> extraGroups = toEntities(requests, store);
         return extraGroupRepository.saveAll(extraGroups);
