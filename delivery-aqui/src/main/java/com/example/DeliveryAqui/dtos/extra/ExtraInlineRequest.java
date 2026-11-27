@@ -11,7 +11,7 @@ public record ExtraInlineRequest(
         String name,
 
         @NotNull(message = "Price is required")
-        @Positive(message = "Price must greater than zero.")
+        @PositiveOrZero(message = "Price must greater or equal than zero.")
         @Digits(integer = 10, fraction = 2, message = "Price must have up to 10 integer digits and 2 decimal places.")
         BigDecimal price,
 

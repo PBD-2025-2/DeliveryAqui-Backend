@@ -60,7 +60,7 @@ public class ExtraGroupController {
     }
 
     @GetMapping(path = "/store/{storeId}")
-    public ResponseEntity<PaginatedResponse<ExtraGroupSummaryResponse>> findByStore(
+    public ResponseEntity<PaginatedResponse<ExtraGroupDetailResponse>> findByStore(
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "ID") ExtraGroupSortField sortField,
@@ -68,7 +68,7 @@ public class ExtraGroupController {
             @PathVariable Long storeId
     ) {
         Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(direction, sortField.getField()));
-        Page<ExtraGroupSummaryResponse> page = extraGroupService.findByStore(storeId, pageable);
+        Page<ExtraGroupDetailResponse> page = extraGroupService.findByStore(storeId, pageable);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

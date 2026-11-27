@@ -45,9 +45,9 @@ public class ExtraGroupService {
         return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
     }
 
-    public  Page<ExtraGroupSummaryResponse> findByStore(Long storeId, Pageable pageable) {
+    public  Page<ExtraGroupDetailResponse> findByStore(Long storeId, Pageable pageable) {
         Page<ExtraGroup> extraGroups = extraGroupRepository.findByStore_Id(storeId, pageable);
-        return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
+        return extraGroups.map(extraGroupMapper::entityToDetailResponse);
     }
 
     @Transactional
