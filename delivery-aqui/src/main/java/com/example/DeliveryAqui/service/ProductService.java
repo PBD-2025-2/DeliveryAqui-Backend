@@ -91,6 +91,7 @@ public class ProductService {
         Product product = productMapper.requestToEntity(request);
         product.setStore(store);
         product.setCategory(category);
+        product.setAvailable(true);
         product = productRepository.save(product);
 
         List<Extra> extras = resolveExtras(request.extraIds(), request.newExtraGroups(), store);
