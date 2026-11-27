@@ -14,7 +14,8 @@ public enum ErrorType {
     PRODUCT_NOT_FOUND("product-not-found"),
     CATEGORY_NOT_FOUND("category-not-found"),
     EXTRA_NOT_FOUND("extra-not-found"),
-    EXTRA_GROUP_NOT_FOUND("extra-group-not-found");
+    EXTRA_GROUP_NOT_FOUND("extra-group-not-found"),
+    PRODUCT_EXTRA_NOT_FOUND("product-extra-not-found");
 
     private static final String PREFIX_URI = "/errors/";
     private final String uri;
