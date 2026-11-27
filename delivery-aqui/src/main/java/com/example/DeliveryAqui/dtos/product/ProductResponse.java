@@ -13,6 +13,5 @@ public record ProductResponse(
         String description,
         String photo,
         BigDecimal salePrice,
-        BigDecimal costPrice,
-        List<ExtraSummaryResponse> extras
+        BigDecimal costPrice
 ) {}
