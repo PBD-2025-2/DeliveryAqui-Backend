@@ -41,7 +41,7 @@ public class ExtraGroup {
     @Column(name = "max_select", nullable = false)
     private Short maxSelect;
 
-    @OneToMany(mappedBy = "extraGroup")
+    @OneToMany(mappedBy = "extraGroup", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @BatchSize(size = 50)
     List<Extra> extras = new ArrayList<>();

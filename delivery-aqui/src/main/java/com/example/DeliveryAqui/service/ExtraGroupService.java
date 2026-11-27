@@ -1,12 +1,12 @@
 package com.example.DeliveryAqui.service;
 
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPostRequest;
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupPutRequest;
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupResponse;
-import com.example.DeliveryAqui.dtos.extraGroup.ExtraGroupSummaryResponse;
+import com.example.DeliveryAqui.dtos.extra.ExtraInlineRequest;
+import com.example.DeliveryAqui.dtos.extraGroup.*;
 import com.example.DeliveryAqui.enums.ErrorType;
 import com.example.DeliveryAqui.exception.ResourceNotFoundException;
 import com.example.DeliveryAqui.mapper.ExtraGroupMapper;
+import com.example.DeliveryAqui.mapper.ExtraMapper;
+import com.example.DeliveryAqui.model.entity.Extra;
 import com.example.DeliveryAqui.model.entity.ExtraGroup;
 import com.example.DeliveryAqui.model.entity.Store;
 import com.example.DeliveryAqui.repository.ExtraGroupRepository;
@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -24,6 +26,8 @@ public class ExtraGroupService {
     private final ExtraGroupRepository extraGroupRepository;
     private final ExtraGroupMapper extraGroupMapper;
     private final StoreRepository storeRepository;
+    private final ExtraMapper extraMapper;
+    private final ExtraService extraService;
 
     public Page<ExtraGroupSummaryResponse> findAll(Pageable pageable) {
         Page<ExtraGroup> extraGroups = extraGroupRepository.findAll(pageable);
@@ -41,9 +45,9 @@ public class ExtraGroupService {
         return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
     }
 
-    public  Page<ExtraGroupSummaryResponse> findByStore(Long storeId, Pageable pageable) {
+    public  Page<ExtraGroupDetailResponse> findByStore(Long storeId, Pageable pageable) {
         Page<ExtraGroup> extraGroups = extraGroupRepository.findByStore_Id(storeId, pageable);
-        return extraGroups.map(extraGroupMapper::entityToSummaryResponse);
+        return extraGroups.map(extraGroupMapper::entityToDetailResponse);
     }
 
     @Transactional
@@ -54,8 +58,30 @@ public class ExtraGroupService {
         ExtraGroup  extraGroup = extraGroupMapper.requestToEntity(postRequest);
         extraGroup.setStore(store);
 
-        extraGroupRepository.save(extraGroup);
+        extraGroup = extraGroupRepository.save(extraGroup);
+
+        if (postRequest.newExtras() != null && !postRequest.newExtras().isEmpty()) {
+            List<Extra> extras = extraService.saveAll(postRequest.newExtras(), extraGroup);
+            extraGroup.setExtras(extras);
+        }
+
         return extraGroupMapper.entityToResponse(extraGroup);
+    }
+
+    @Transactional
+    public List<ExtraGroupDetailResponse> saveAll(ExtraGroupBatchPostRequest batchPostRequest) {
+        Store store = storeRepository.findById(batchPostRequest.storeId())
+                .orElseThrow(() -> new ResourceNotFoundException("Store", batchPostRequest.storeId(), ErrorType.STORE_NOT_FOUND));
+
+        List<ExtraGroup> extraGroups = toEntities(batchPostRequest.extraGroups(), store);
+        extraGroups = extraGroupRepository.saveAll(extraGroups);
+        return extraGroupMapper.entityToDetailResponse(extraGroups);
+    }
+
+    @Transactional
+    public List<ExtraGroup> saveAll(List<ExtraGroupInlineRequest> requests, Store store) {
+        List<ExtraGroup> extraGroups = toEntities(requests, store);
+        return extraGroupRepository.saveAll(extraGroups);
     }
 
     @Transactional
@@ -74,5 +100,25 @@ public class ExtraGroupService {
                 .orElseThrow(() -> new ResourceNotFoundException("Extra Group", id, ErrorType.EXTRA_GROUP_NOT_FOUND));
 
         extraGroupRepository.delete(extraGroup);
+    }
+
+    private void addExtras(ExtraGroup extraGroup, List<ExtraInlineRequest> requests) {
+        if (requests == null || requests.isEmpty()) {
+            return;
+        }
+
+        List<Extra> extras = extraMapper.requestToEntity(requests);
+        extras.forEach(extra -> extra.setExtraGroup(extraGroup));
+        extraGroup.getExtras().addAll(extras);
+    }
+
+    private List<ExtraGroup> toEntities(List<ExtraGroupInlineRequest> requests, Store store) {
+        return requests.stream()
+                .map(request -> {
+                    ExtraGroup extraGroup = extraGroupMapper.requestToEntity(request);
+                    extraGroup.setStore(store);
+                    addExtras(extraGroup, request.newExtras());
+                    return extraGroup;
+                }).toList();
     }
 }

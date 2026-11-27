@@ -1,10 +1,6 @@
 package com.example.DeliveryAqui.controller;
 
-import com.example.DeliveryAqui.dtos.address.AddressSummaryResponse;
-import com.example.DeliveryAqui.dtos.person.PersonDetailResponse;
-import com.example.DeliveryAqui.dtos.product.ProductPostRequest;
-import com.example.DeliveryAqui.dtos.product.ProductResponse;
-import com.example.DeliveryAqui.dtos.product.ProductSummaryResponse;
+import com.example.DeliveryAqui.dtos.product.*;
 import com.example.DeliveryAqui.dtos.shared.PaginatedResponse;
 import com.example.DeliveryAqui.enums.AddressSortField;
 import com.example.DeliveryAqui.service.ProductService;
@@ -19,11 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/products")
+@CrossOrigin(origins = "*")
 public class ProductController {
 
     private final ProductService productService;
@@ -43,18 +38,8 @@ public class ProductController {
                 .body(PaginationUtils.buildPaginatedResponse(page));
     }
 
-
-    @PostMapping
-    public ResponseEntity<ProductResponse> create(@Valid @RequestBody ProductPostRequest request) {
-        ProductResponse response = productService.create(request);
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
-
     @GetMapping("/id/{id}")
-    public ResponseEntity<ProductResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<ProductDetailResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.findById(id));
     }
 
@@ -110,5 +95,23 @@ public class ProductController {
                 .body(PaginationUtils.buildPaginatedResponse(page));
     }
 
+    @PostMapping
+    public ResponseEntity<ProductDetailResponse> create(@Valid @RequestBody ProductPostRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(productService.create(request));
+    }
 
+    @PutMapping
+    public ResponseEntity<ProductResponse> put(@RequestParam Long id, @RequestBody @Valid ProductPutRequest putRequest) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(productService.update(id, putRequest));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam Long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

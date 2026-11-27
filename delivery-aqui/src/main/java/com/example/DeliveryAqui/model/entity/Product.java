@@ -32,7 +32,7 @@ public class Product {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "photo")
+    @Column(name = "photo", length = Integer.MAX_VALUE)
     private String photo;
 
     @Column(name = "salePrice",  nullable = false, precision = 10, scale = 2)
